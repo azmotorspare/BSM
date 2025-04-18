@@ -1,0 +1,619 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Business Management System</h1>
+        
+        <div class="main-tabs">
+            <div class="main-tab active" data-tab="supplier">Supplier Management</div>
+            <div class="main-tab" data-tab="expenses">Expenses Management</div>
+            <div class="main-tab" data-tab="sales">Sales Management</div>
+            <div class="main-tab" data-tab="stock">Stock Management</div>
+        </div>
+        
+        <!-- Supplier Management Tab -->
+        <div id="supplierManagement" class="tab-content active">
+            <div class="sub-tabs">
+                <div class="sub-tab active" data-subtab="supplier-entry">New Order</div>
+                <div class="sub-tab" data-subtab="supplier-summary">Order Summary</div>
+            </div>
+            
+            <!-- Supplier Entry Form Tab -->
+            <div id="supplierEntryForm" class="tab-content active">
+                <div class="form-group">
+                    <label for="orderDate">Order Date</label>
+                    <input type="date" id="orderDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="supplier">Supplier</label>
+                    <select id="supplier" required>
+                        <option value="">-- Select Supplier --</option>
+                        <option value="Lazada">Lazada</option>
+                        <option value="Shoppee">Shoppee</option>
+                        <option value="Shein">Shein</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="currency">Select Currency</label>
+                    <select id="currency" class="currency-selector" required>
+                        <option value="">-- Select Currency --</option>
+                        <option value="MVR" data-symbol="MVR" data-flag="https://flagcdn.com/w20/mv.png">Maldivian Rufiyaa (MVR)</option>
+                        <option value="USD" data-symbol="$" data-flag="https://flagcdn.com/w20/us.png">US Dollar (USD)</option>
+                        <option value="AED" data-symbol="AED" data-flag="https://flagcdn.com/w20/ae.png">UAE Dirham (AED)</option>
+                        <option value="CNY" data-symbol="¥" data-flag="https://flagcdn.com/w20/cn.png">Chinese Yuan (CNY)</option>
+                        <option value="EUR" data-symbol="€" data-flag="https://flagcdn.com/w20/eu.png">Euro (EUR)</option>
+                        <option value="IDR" data-symbol="Rp" data-flag="https://flagcdn.com/w20/id.png">Indonesian Rupiah (IDR)</option>
+                        <option value="INR" data-symbol="₹" data-flag="https://flagcdn.com/w20/in.png">Indian Rupee (INR)</option>
+                        <option value="JPY" data-symbol="¥" data-flag="https://flagcdn.com/w20/jp.png">Japanese Yen (JPY)</option>
+                        <option value="LKR" data-symbol="Rs" data-flag="https://flagcdn.com/w20/lk.png">Sri Lankan Rupee (LKR)</option>
+                        <option value="MYR" data-symbol="RM" data-flag="https://flagcdn.com/w20/my.png">Malaysian Ringgit (MYR)</option>
+                        <option value="NZD" data-symbol="NZ$" data-flag="https://flagcdn.com/w20/nz.png">New Zealand Dollar (NZD)</option>
+                        <option value="SAR" data-symbol="SAR" data-flag="https://flagcdn.com/w20/sa.png">Saudi Riyal (SAR)</option>
+                        <option value="SEK" data-symbol="kr" data-flag="https://flagcdn.com/w20/se.png">Swedish Krona (SEK)</option>
+                        <option value="SGD" data-symbol="S$" data-flag="https://flagcdn.com/w20/sg.png">Singapore Dollar (SGD)</option>
+                        <option value="THB" data-symbol="฿" data-flag="https://flagcdn.com/w20/th.png">Thai Baht (THB)</option>
+                    </select>
+                    <div id="rateInfo" class="rate-info">Exchange rates will be loaded when currency is selected</div>
+                </div>
+                
+                <h2>Order Items (<span id="currentCurrency">Select currency</span> <span id="currentCurrencyFlag"></span>)</h2>
+                <table id="orderTable">
+                    <thead>
+                        <tr>
+                            <th width="40%">Item Description</th>
+                            <th width="15%">Quantity</th>
+                            <th width="20%">Unit Price (<span class="currency-symbol">--</span>)</th>
+                            <th width="20%">Total (<span class="currency-symbol">--</span>)</th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderItems">
+                        <!-- Items will be added here -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="3">Subtotal</td>
+                            <td id="subtotal"><span class="currency-symbol">--</span> 0.00</td>
+                            <td></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="3">Grand Total</td>
+                            <td id="grandTotal"><span class="currency-symbol">--</span> 0.00</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <button type="button" class="btn btn-primary" id="addItem"><i class="fas fa-plus"></i> Add Item</button>
+                
+                <div class="payment-section">
+                    <div class="payment-row">
+                        <span>Total Amount:</span>
+                        <span id="totalAmount"><span class="currency-symbol">--</span> 0.00</span>
+                    </div>
+                    <div class="payment-row">
+                        <span>Amount Paid (MVR):</span>
+                        <span>
+                            <input type="number" id="amountPaid" min="0" step="0.01" value="0.00" style="width: 120px;">
+                            <span>MVR</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea id="notes" rows="3"></textarea>
+                </div>
+                
+                <button type="button" class="btn btn-success" id="submitOrder"><i class="fas fa-paper-plane"></i> Submit Order</button>
+            </div>
+            
+            <!-- Supplier Order Summary Tab -->
+            <div id="supplierOrderSummary" class="tab-content">
+                <div id="supplierSummaryTotals" class="summary-totals">
+                    <div class="summary-total-card">
+                        <h3>Total Orders</h3>
+                        <div class="amount" id="totalOrders">0</div>
+                    </div>
+                    <div class="summary-total-card">
+                        <h3>Total Subtotal (MVR)</h3>
+                        <div class="amount" id="totalSubtotal">0.00</div>
+                        <div class="currency">MVR</div>
+                    </div>
+                    <div class="summary-total-card">
+                        <h3>Total Amount Paid (MVR)</h3>
+                        <div class="amount" id="totalPaid">0.00</div>
+                        <div class="currency">MVR</div>
+                    </div>
+                    <div class="summary-total-card no-print">
+                        <h3>Export Summary</h3>
+                        <button class="btn btn-warning" id="exportSupplierSummaryPdf" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-file-pdf"></i> Export to PDF
+                        </button>
+                        <button class="btn btn-info" id="exportAllSummaries" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-file-pdf"></i> Export All Summaries
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="supplierOrdersTableContainer">
+                    <div id="supplierLoadingIndicator" class="loading">Loading orders...</div>
+                    <table id="supplierOrdersTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Order Number</th>
+                                <th>Supplier</th>
+                                <th>Subtotal</th>
+                                <th>Amount Paid (MVR)</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="supplierOrdersList">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="grand-total-row">
+                                <td colspan="3">Grand Totals</td>
+                                <td id="supplierGrandSubtotal">MVR 0.00</td>
+                                <td id="supplierGrandPaid">MVR 0.00</td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="delete-all">
+                    <button class="btn btn-danger" id="deleteAllSupplierOrders"><i class="fas fa-trash-alt"></i> Delete All Orders</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Expenses Management Tab -->
+        <div id="expensesManagement" class="tab-content">
+            <div class="sub-tabs">
+                <div class="sub-tab active" data-subtab="expenses-entry">New Expense</div>
+                <div class="sub-tab" data-subtab="expenses-summary">Expenses Summary</div>
+            </div>
+            
+            <!-- Expenses Entry Form Tab -->
+            <div id="expensesEntryForm" class="tab-content active">
+                <div class="form-group">
+                    <label for="expenseDate">Expense Date</label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="expenseOrderNumber">Order Number (if applicable)</label>
+                    <input type="text" id="expenseOrderNumber" placeholder="Optional">
+                </div>
+                
+                <h2>Expense Items</h2>
+                <table id="expenseTable">
+                    <thead>
+                        <tr>
+                            <th width="40%">Item Name</th>
+                            <th width="15%">Quantity</th>
+                            <th width="40%">Category</th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenseItems">
+                        <!-- Items will be added here -->
+                    </tbody>
+                </table>
+                
+                <button type="button" class="btn btn-primary" id="addExpenseItem"><i class="fas fa-plus"></i> Add Item</button>
+                
+                <div class="payment-section" id="expensePaymentsSection">
+                    <h3>Expense Payments</h3>
+                    <div class="form-group">
+                        <label for="expenseCategory">Category</label>
+                        <select id="expenseCategory" class="form-control">
+                            <option value="REDBOX">REDBOX</option>
+                            <option value="WEIGHT">WEIGHT</option>
+                            <option value="CLEARENCE">CLEARENCE</option>
+                            <option value="OTHER">OTHER</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="totalWeightPayment">Total Payment Paid for Weight (MVR)</label>
+                        <input type="number" id="totalWeightPayment" min="0" step="0.01" value="0.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="totalClearencePayment">Total Payment Paid for Clearence (MVR)</label>
+                        <input type="number" id="totalClearencePayment" min="0" step="0.01" value="0.00">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="expenseNotes">Notes</label>
+                    <textarea id="expenseNotes" rows="3"></textarea>
+                </div>
+                
+                <div id="expenseTotalsSection">
+                    <table>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td>Total Weight Payment (MVR)</td>
+                                <td id="expenseWeightTotal">0.00</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>Total Clearence Payment (MVR)</td>
+                                <td id="expenseClearenceTotal">0.00</td>
+                            </tr>
+                            <tr class="grand-total-row">
+                                <td>Grand Total (MVR)</td>
+                                <td id="expenseTotal">0.00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <button type="button" class="btn btn-success" id="submitExpense"><i class="fas fa-paper-plane"></i> Submit Expense</button>
+            </div>
+            
+            <!-- Expenses Summary Tab -->
+            <div id="expensesSummary" class="tab-content">
+                <div id="expensesSummaryTotals" class="summary-totals">
+                    <div class="summary-total-card">
+                        <h3>Total Expenses</h3>
+                        <div class="amount" id="totalExpenses">0</div>
+                    </div>
+                    <div class="summary-total-card">
+                        <h3>Total Weight (MVR)</h3>
+                        <div class="amount" id="totalWeight">0.00</div>
+                        <div class="currency">MVR</div>
+                    </div>
+                    <div class="summary-total-card">
+                        <h3>Total Clearence (MVR)</h3>
+                        <div class="amount" id="totalClearence">0.00</div>
+                        <div class="currency">MVR</div>
+                    </div>
+                    <div class="summary-total-card">
+                        <h3>Total Amount (MVR)</h3>
+                        <div class="amount" id="totalExpensesAmount">0.00</div>
+                        <div class="currency">MVR</div>
+                    </div>
+                    <div class="summary-total-card no-print">
+                        <h3>Export Summary</h3>
+                        <button class="btn btn-warning" id="exportExpensesSummaryPdf" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-file-pdf"></i> Export to PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="expensesTableContainer">
+                    <div id="expensesLoadingIndicator" class="loading">Loading expenses...</div>
+                    <table id="expensesTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Expense #</th>
+                                <th>Order #</th>
+                                <th>Weight (MVR)</th>
+                                <th>Clearence (MVR)</th>
+                                <th>Total (MVR)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesList">
+                            <!-- Expenses will be loaded here -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="grand-total-row">
+                                <td colspan="3">Grand Totals</td>
+                                <td id="expensesGrandWeight">0.00</td>
+                                <td id="expensesGrandClearence">0.00</td>
+                                <td id="expensesGrandTotal">0.00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="delete-all">
+                    <button class="btn btn-danger" id="deleteAllExpenses"><i class="fas fa-trash-alt"></i> Delete All Expenses</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sales Management Tab -->
+        <div id="salesManagement" class="tab-content">
+            <div class="sub-tabs">
+                <div class="sub-tab active" data-subtab="sales-entry">New Sale</div>
+                <div class="sub-tab" data-subtab="sales-summary">Sales Summary</div>
+                <div class="sub-tab" data-subtab="sales-analysis">Sales Analysis</div>
+            </div>
+            
+            <!-- Sales Entry Form Tab -->
+            <div id="salesEntryForm" class="tab-content active">
+                <div class="form-group">
+                    <label for="saleDate">Sale Date</label>
+                    <input type="date" id="saleDate" required>
+                </div>
+                
+                <h2>Sale Items</h2>
+                <table id="saleTable">
+                    <thead>
+                        <tr>
+                            <th width="25%">Item Code</th>
+                            <th width="25%">Item</th>
+                            <th width="10%">Current Stock</th>
+                            <th width="10%">Price (MVR)</th>
+                            <th width="10%">Quantity</th>
+                            <th width="15%">Total (MVR)</th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="saleItems">
+                        <!-- Items will be added here -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="5">Subtotal</td>
+                            <td id="saleSubtotal">MVR 0.00</td>
+                            <td></td>
+                        </tr>
+                        <tr class="grand-total-row">
+                            <td colspan="5">Grand Total</td>
+                            <td id="saleGrandTotal">MVR 0.00</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <button type="button" class="btn btn-primary" id="addSaleItem"><i class="fas fa-plus"></i> Add Item</button>
+                
+                <div class="form-group">
+                    <label for="customerName">Customer Name</label>
+                    <input type="text" id="customerName" placeholder="Optional">
+                </div>
+                
+                <div class="form-group">
+                    <label for="customerContact">Customer Contact</label>
+                    <input type="text" id="customerContact" placeholder="Optional">
+                </div>
+                
+                <div class="form-group">
+                    <label for="saleNotes">Notes</label>
+                    <textarea id="saleNotes" rows="3"></textarea>
+                </div>
+                
+                <button type="button" class="btn btn-success" id="submitSale"><i class="fas fa-paper-plane"></i> Save Sale</button>
+            </div>
+            
+            <!-- Sales Summary Tab -->
+            <div id="salesSummary" class="tab-content">
+                <div id="salesSummaryTotals" class="summary-totals">
+                    <div class="summary-total-card">
+                        <h3>Total Sales</h3>
+                        <div class="amount" id="totalSales">0</div>
+                    </div>
+                    <div class="summary-total-card">
+                        <h3>Total Revenue (MVR)</h3>
+                        <div class="amount" id="totalRevenue">0.00</div>
+                        <div class="currency">MVR</div>
+                    </div>
+                    <div class="summary-total-card">
+                        <h3>Items Sold</h3>
+                        <div class="amount" id="totalItemsSold">0</div>
+                    </div>
+                    <div class="summary-total-card no-print">
+                        <h3>Export Summary</h3>
+                        <button class="btn btn-warning" id="exportSalesSummaryPdf" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-file-pdf"></i> Export to PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="salesTableContainer">
+                    <div id="salesLoadingIndicator" class="loading">Loading sales...</div>
+                    <table id="salesTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Sale #</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Total (MVR)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesList">
+                            <!-- Sales will be loaded here -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="grand-total-row">
+                                <td colspan="4">Grand Total</td>
+                                <td id="salesGrandTotal">MVR 0.00</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="delete-all">
+                    <button class="btn btn-danger" id="deleteAllSales"><i class="fas fa-trash-alt"></i> Delete All Sales</button>
+                </div>
+            </div>
+            
+            <!-- Sales Analysis Tab -->
+            <div id="salesAnalysis" class="tab-content">
+                <div class="form-group">
+                    <label for="analysisStartDate">Start Date</label>
+                    <input type="date" id="analysisStartDate">
+                </div>
+                
+                <div class="form-group">
+                    <label for="analysisEndDate">End Date</label>
+                    <input type="date" id="analysisEndDate">
+                </div>
+
+                <div class="form-group">
+                    <label for="analysisItemCode">Item Filter</label>
+                    <select id="analysisItemCode" class="form-control">
+                        <option value="ALL">All Products</option>
+                        <!-- Items will be populated dynamically -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="analysisItemCode">Item Code (optional)</label>
+                    <input type="text" id="analysisItemCode" placeholder="Enter item code to filter">
+                </div>
+                
+                <button type="button" class="btn btn-primary" id="analyzeSales"><i class="fas fa-chart-bar"></i> Analyze Sales</button>
+                
+                <div id="salesAnalysisResults" style="margin-top: 20px;">
+                    <div id="salesAnalysisLoading" class="loading" style="display: none;">Analyzing sales data...</div>
+                    <table id="salesAnalysisTable" style="display: none; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Item Code</th>
+                                <th>Item Name</th>
+                                <th>Total Sold</th>
+                                <th>Total Revenue (MVR)</th>
+                                <th>% of Total Sales</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesAnalysisList">
+                            <!-- Analysis results will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stock Management Tab -->
+        <div id="stockManagement" class="tab-content">
+            <div class="sub-tabs">
+                <div class="sub-tab active" data-subtab="stock-entry">Add/Update Stock</div>
+                <div class="sub-tab" data-subtab="stock-summary">Stock Summary</div>
+            </div>
+            
+            <!-- Stock Entry Form Tab -->
+            <div id="stockEntryForm" class="tab-content active">
+                <div class="form-group">
+                    <label for="stockDate">Stock Date</label>
+                    <input type="date" id="stockDate" required>
+                </div>
+                
+                <h2>Stock Items</h2>
+                <table id="stockTable">
+                    <thead>
+                        <tr>
+                            <th width="20%">Item Code</th>
+                            <th width="30%">Item Name</th>
+                            <th width="15%">Quantity</th>
+                            <th width="15%">Price (MVR)</th>
+                            <th width="15%">Total (MVR)</th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockItems">
+                        <!-- Items will be added here -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="grand-total-row">
+                            <td colspan="4">Grand Total</td>
+                            <td id="stockGrandTotal">MVR 0.00</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <button type="button" class="btn btn-primary" id="addStockItem"><i class="fas fa-plus"></i> Add Item</button>
+                
+                <div class="form-group">
+                    <label for="stockNotes">Notes</label>
+                    <textarea id="stockNotes" rows="3"></textarea>
+                </div>
+                
+                <button type="button" class="btn btn-success" id="submitStock"><i class="fas fa-paper-plane"></i> Save Stock</button>
+            </div>
+            
+            <!-- Stock Summary Tab -->
+            <div id="stockSummary" class="tab-content">
+                <div id="stockSummaryTotals" class="summary-totals">
+                    <div class="summary-total-card">
+                        <h3>Total Items</h3>
+                        <div class="amount" id="totalStockItems">0</div>
+                    </div>
+                    <div class="summary-total-card">
+                        <h3>Total Quantity</h3>
+                        <div class="amount" id="totalStockQuantity">0</div>
+                    </div>
+                    <div class="summary-total-card">
+                        <h3>Total Value (MVR)</h3>
+                        <div class="amount" id="totalStockValue">0.00</div>
+                        <div class="currency">MVR</div>
+                    </div>
+                    <div class="summary-total-card no-print">
+                        <h3>Export Summary</h3>
+                        <button class="btn btn-warning" id="exportStockSummaryPdf" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-file-pdf"></i> Export to PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="stockTableContainer">
+                    <div id="stockLoadingIndicator" class="loading">Loading stock...</div>
+                    <table id="stockSummaryTable">
+                        <thead>
+                            <tr>
+                                <th>Item Code</th>
+                                <th>Item Name</th>
+                                <th>Current Stock</th>
+                                <th>Price (MVR)</th>
+                                <th>Total Value (MVR)</th>
+                                <th>Last Updated</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockList">
+                            <!-- Stock items will be loaded here -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="grand-total-row">
+                                <td colspan="2">Grand Total</td>
+                                <td id="stockSummaryTotalQty">0</td>
+                                <td></td>
+                                <td id="stockSummaryGrandTotal">MVR 0.00</td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="delete-all">
+                    <button class="btn btn-danger" id="deleteAllStock"><i class="fas fa-trash-alt"></i> Delete All Stock</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
