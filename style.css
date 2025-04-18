@@ -1,48 +1,51 @@
-
-/* Base Styles */
+/* Mobile-First Base Styles */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     background-color: #f5f7fa;
     color: #333;
-    line-height: 1.6;
-    padding: 10px;
+    line-height: 1.5;
+    padding: 8px;
     min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
 }
 
 .container {
-    max-width: 100%;
+    width: 100%;
     margin: 0 auto;
     background-color: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow-x: auto;
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    overflow-x: hidden;
 }
 
 h1 {
     text-align: center;
     color: #2c3e50;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    font-size: 1.4rem;
+    font-weight: 600;
     border-bottom: 1px solid #eee;
-    font-size: 1.5rem;
 }
 
-/* Tab Navigation */
+/* Tab Navigation - Mobile Optimized */
 .main-tabs {
     display: flex;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     border-bottom: 1px solid #ddd;
     overflow-x: auto;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    padding-bottom: 4px;
 }
 
 .main-tabs::-webkit-scrollbar {
@@ -50,15 +53,16 @@ h1 {
 }
 
 .main-tab {
-    padding: 8px 15px;
+    padding: 10px 16px;
     cursor: pointer;
     background-color: #f1f1f1;
     border: 1px solid #ddd;
     border-bottom: none;
-    margin-right: 5px;
-    border-radius: 5px 5px 0 0;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
+    margin-right: 6px;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    font-weight: 500;
     flex-shrink: 0;
 }
 
@@ -71,34 +75,29 @@ h1 {
     border-bottom: 1px solid white;
     margin-bottom: -1px;
     font-weight: 600;
-    color: #3498db;
-    border-top: 2px solid #3498db;
+    color: #007aff; /* iOS-like blue */
+    border-top: 3px solid #007aff;
 }
 
 .sub-tabs {
     display: flex;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     border-bottom: 1px solid #ddd;
     overflow-x: auto;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-}
-
-.sub-tabs::-webkit-scrollbar {
-    display: none;
 }
 
 .sub-tab {
-    padding: 6px 12px;
+    padding: 8px 14px;
     cursor: pointer;
     background-color: #f1f1f1;
     border: 1px solid #ddd;
     border-bottom: none;
-    margin-right: 5px;
-    border-radius: 5px 5px 0 0;
-    transition: all 0.3s ease;
-    font-size: 0.85rem;
+    margin-right: 6px;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
     flex-shrink: 0;
 }
 
@@ -111,8 +110,8 @@ h1 {
     border-bottom: 1px solid white;
     margin-bottom: -1px;
     font-weight: 600;
-    color: #3498db;
-    border-top: 2px solid #3498db;
+    color: #007aff;
+    border-top: 2px solid #007aff;
 }
 
 .tab-content {
@@ -121,67 +120,69 @@ h1 {
 
 .tab-content.active {
     display: block;
-    animation: fadeIn 0.5s ease;
+    animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Form Elements */
+/* Form Elements - Mobile Friendly */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 label {
     display: block;
     margin-bottom: 6px;
-    font-weight: 600;
+    font-weight: 500;
     color: #495057;
     font-size: 0.9rem;
 }
 
 input, select, textarea {
     width: 100%;
-    padding: 8px 10px;
+    padding: 12px 14px;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    transition: border 0.3s ease;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background-color: #fff;
+    -webkit-appearance: none;
 }
 
 input:focus, select:focus, textarea:focus {
-    border-color: #3498db;
+    border-color: #007aff;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
 }
 
-.currency-selector {
-    margin-bottom: 15px;
-}
-
-/* Tables */
+/* Tables - Mobile Optimized */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin: 15px 0;
+    margin: 16px 0;
     background-color: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     font-size: 0.85rem;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 th, td {
     border: 1px solid #e0e0e0;
-    padding: 8px;
+    padding: 10px;
     text-align: left;
+    min-width: 80px;
 }
 
 th {
     background-color: #f8f9fa;
     font-weight: 600;
     color: #2c3e50;
-    font-size: 0.9rem;
+    position: sticky;
+    top: 0;
 }
 
 tr:nth-child(even) {
@@ -192,73 +193,65 @@ tr:hover {
     background-color: #f1f7fd;
 }
 
-/* Buttons */
+/* Buttons - Mobile Optimized */
 .btn {
-    padding: 8px 15px;
+    padding: 12px 18px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+    font-size: 0.95rem;
+    transition: all 0.2s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     white-space: nowrap;
+    font-weight: 500;
+    touch-action: manipulation;
 }
 
 .btn i {
-    margin-right: 5px;
-    font-size: 0.9rem;
+    margin-right: 8px;
+    font-size: 1rem;
 }
 
 .btn-primary {
-    background-color: #3498db;
+    background-color: #007aff;
     color: white;
 }
 
 .btn-primary:hover {
-    background-color: #2980b9;
+    background-color: #0062cc;
 }
 
 .btn-danger {
-    background-color: #e74c3c;
+    background-color: #ff3b30;
     color: white;
-    padding: 4px 8px;
-    font-size: 0.8rem;
+    padding: 8px 12px;
 }
 
 .btn-danger:hover {
-    background-color: #c0392b;
+    background-color: #d70015;
 }
 
 .btn-success {
-    background-color: #2ecc71;
+    background-color: #34c759;
     color: white;
     width: 100%;
-    padding: 10px;
-    margin-top: 15px;
+    padding: 14px;
+    margin-top: 16px;
 }
 
 .btn-success:hover {
-    background-color: #27ae60;
+    background-color: #248a3d;
 }
 
 .btn-warning {
-    background-color: #f39c12;
+    background-color: #ff9500;
     color: white;
 }
 
 .btn-warning:hover {
-    background-color: #d35400;
-}
-
-.btn-info {
-    background-color: #17a2b8;
-    color: white;
-}
-
-.btn-info:hover {
-    background-color: #138496;
+    background-color: #c93400;
 }
 
 /* Special Rows */
@@ -273,84 +266,51 @@ tr:hover {
     color: #2c3e50;
 }
 
-.currency-symbol {
-    font-weight: bold;
-}
-
 /* Status Indicators */
 .status {
     display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
     font-weight: 600;
     font-size: 0.8rem;
 }
 
 .status.shipped {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: #ffd1cf;
+    color: #d70015;
 }
 
 .status.departed {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: #d1f7c4;
+    color: #248a3d;
 }
 
 /* Loading Indicator */
 .loading {
     text-align: center;
-    padding: 15px;
+    padding: 20px;
     font-style: italic;
     color: #666;
     font-size: 0.9rem;
 }
 
-/* Currency Info */
-.rate-info {
-    font-size: 0.8rem;
-    color: #666;
-    margin-top: 5px;
-    padding: 5px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-}
-
-.currency-option {
-    display: flex;
-    align-items: center;
-}
-
-.currency-flag {
-    width: 18px;
-    height: 13px;
-    margin-right: 6px;
-    border: 1px solid #ddd;
-}
-
-.currency-display {
-    display: flex;
-    align-items: center;
-}
-
-/* Summary Cards */
+/* Summary Cards - Mobile Stack */
 .summary-totals {
     background-color: #f8f9fa;
     padding: 12px;
-    border-radius: 5px;
-    margin-bottom: 15px;
+    border-radius: 12px;
+    margin-bottom: 16px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
     gap: 12px;
 }
 
 .summary-total-card {
     background-color: white;
-    padding: 12px;
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #3498db;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #007aff;
 }
 
 .summary-total-card h3 {
@@ -360,8 +320,8 @@ tr:hover {
 }
 
 .summary-total-card .amount {
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.4rem;
+    font-weight: 700;
     color: #2c3e50;
 }
 
@@ -373,18 +333,19 @@ tr:hover {
 /* Payment Section */
 .payment-section {
     background-color: #f8f9fa;
-    padding: 12px;
-    border-radius: 5px;
-    margin: 15px 0;
+    padding: 14px;
+    border-radius: 10px;
+    margin: 16px 0;
 }
 
 .payment-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
-    padding: 6px 0;
+    margin-bottom: 10px;
+    padding: 8px 0;
     border-bottom: 1px solid #eee;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    align-items: center;
 }
 
 .payment-row:last-child {
@@ -394,14 +355,107 @@ tr:hover {
 
 /* Delete All Button */
 .delete-all {
-    margin-top: 15px;
+    margin-top: 16px;
     text-align: right;
 }
 
-/* Highlight for top selling items */
-.top-selling {
-    background-color: #e6f7ff;
-    font-weight: bold;
+/* Form Input Groups - Better Mobile Experience */
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.input-group input {
+    flex: 1;
+    margin-right: 8px;
+}
+
+.input-group .btn {
+    flex-shrink: 0;
+}
+
+/* Currency Selector - Mobile Friendly */
+.currency-selector select {
+    padding: 12px 14px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 36px;
+}
+
+/* Modal/Dialog Styles for Mobile */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* Responsive Table Cell Padding */
+@media (max-width: 400px) {
+    th, td {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+    
+    .btn {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+    
+    input, select, textarea {
+        padding: 10px 12px;
+    }
+}
+
+/* Very Small Screens (e.g., iPhone SE) */
+@media (max-width: 375px) {
+    .container {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.3rem;
+    }
+    
+    .main-tab {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .sub-tab {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+    
+    .btn {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .btn i {
+        margin-right: 6px;
+        font-size: 0.9rem;
+    }
 }
 
 /* Print Styles */
@@ -417,7 +471,7 @@ tr:hover {
         left: 0;
         top: 0;
         width: 100%;
-        padding: 20px;
+        padding: 10px;
         box-shadow: none;
         border: none;
     }
@@ -426,149 +480,5 @@ tr:hover {
     }
     .page-break {
         page-break-after: always;
-    }
-}
-
-/* Responsive Adjustments */
-@media (max-width: 992px) {
-    .container {
-        padding: 12px;
-    }
-    
-    h1 {
-        font-size: 1.3rem;
-    }
-    
-    .summary-totals {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    body {
-        padding: 5px;
-    }
-    
-    .container {
-        padding: 10px;
-    }
-    
-    h1 {
-        font-size: 1.2rem;
-        margin-bottom: 15px;
-    }
-    
-    .main-tab {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-    }
-    
-    .sub-tab {
-        padding: 5px 10px;
-        font-size: 0.8rem;
-    }
-    
-    .btn {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-    }
-    
-    .btn i {
-        font-size: 0.8rem;
-    }
-    
-    th, td {
-        padding: 6px;
-        font-size: 0.8rem;
-    }
-    
-    .summary-totals {
-        grid-template-columns: 1fr;
-    }
-    
-    .summary-total-card h3 {
-        font-size: 0.85rem;
-    }
-    
-    .summary-total-card .amount {
-        font-size: 1.1rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .main-tab {
-        padding: 5px 10px;
-        font-size: 0.75rem;
-    }
-    
-    .sub-tab {
-        padding: 4px 8px;
-        font-size: 0.75rem;
-    }
-    
-    input, select, textarea {
-        padding: 6px 8px;
-        font-size: 0.8rem;
-    }
-    
-    .btn {
-        padding: 5px 10px;
-        font-size: 0.75rem;
-    }
-    
-    .btn i {
-        font-size: 0.75rem;
-    }
-    
-    th, td {
-        padding: 4px;
-        font-size: 0.75rem;
-    }
-    
-    .status {
-        font-size: 0.7rem;
-        padding: 3px 6px;
-    }
-    
-    .payment-row {
-        font-size: 0.8rem;
-    }
-    
-    /* Make tables horizontally scrollable on small screens */
-    table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-}
-
-/* Very small screens (e.g., iPhone 5/SE) */
-@media (max-width: 320px) {
-    .main-tab {
-        padding: 4px 8px;
-        font-size: 0.7rem;
-    }
-    
-    .sub-tab {
-        padding: 3px 6px;
-        font-size: 0.7rem;
-    }
-    
-    .btn {
-        padding: 4px 8px;
-        font-size: 0.7rem;
-    }
-    
-    .btn i {
-        margin-right: 3px;
-        font-size: 0.7rem;
-    }
-    
-    .summary-total-card h3 {
-        font-size: 0.8rem;
-    }
-    
-    .summary-total-card .amount {
-        font-size: 1rem;
     }
 }
